@@ -1,0 +1,61 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install dependencies
+      run: pnpm install
+      
+    - name: Build customer-app
+      run: npx nx build customer-app
+      
+    - name: Copy built files and deployment script to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        source: "dist/apps/customer-app/*,deploy.sh"
+        target: "/tmp/"
+        
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          # Make deployment script executable
+          chmod +x /tmp/deploy.sh
+          
+          # Move built files to proper location for deployment script
+          mkdir -p /tmp/dist/apps/customer-app
+          cp -r /tmp/customer-app/* /tmp/dist/apps/customer-app/ 2>/dev/null || echo "Files already in correct location"
+          
+          # Run deployment script
+          /tmp/deploy.sh
+          
+          # Clean up
+          rm -rf /tmp/deploy.sh /tmp/customer-app /tmp/dist
