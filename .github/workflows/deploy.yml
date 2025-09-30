@@ -31,21 +31,62 @@ jobs:
     - name: Build customer-app
       run: pnpm run build
       
+    - name: Test SSH Connection
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: 148.230.116.195
+        username: root
+        key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
+          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
+          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
+          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
+          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
+          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
+          -----END OPENSSH PRIVATE KEY-----
+        passphrase: amin
+        debug: true
+        script: |
+          echo "Testing SSH connection..."
+          echo "Hostname: $(hostname)"
+          echo "User: $(whoami)"
+          
     - name: Copy built files and deployment script to server
       uses: appleboy/scp-action@v0.1.7
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
+        host: 148.230.116.195
+        username: root
+        key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
+          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
+          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
+          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
+          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
+          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
+          -----END OPENSSH PRIVATE KEY-----
+        passphrase: amin
         source: "dist/apps/customer-app/*,deploy.sh"
         target: "/tmp/"
+        debug: true
         
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
+        host: 148.230.116.195
+        username: root
+        key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
+          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
+          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
+          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
+          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
+          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
+          -----END OPENSSH PRIVATE KEY-----
+        passphrase: amin
+        debug: true
         script: |
           # Make deployment script executable
           chmod +x /tmp/deploy.sh
