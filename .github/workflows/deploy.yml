@@ -23,7 +23,7 @@ jobs:
         docker run --rm customer-app node --version
         docker run --rm customer-app pnpm --version
         
-    - name: Copy Docker files to server
+    - name: Copy all files to server
       uses: appleboy/scp-action@v0.1.7
       with:
         host: 148.230.116.195
@@ -38,7 +38,7 @@ jobs:
           UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
           -----END OPENSSH PRIVATE KEY-----
         passphrase: amin
-        source: "Dockerfile,docker-compose.yml,docker-compose.prod.yml"
+        source: "."
         target: "/var/project/"
         debug: true
         
