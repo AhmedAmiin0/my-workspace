@@ -5,7 +5,9 @@
   "scripts": {
     "build": "nx build customer-app",
     "start:dev": "nx serve customer-app",
-    "start:prod": "node dist/apps/customer-app/main.js"
+    "start:prod": "node dist/apps/customer-app/main.js",
+    "test": "nx test",
+    "lint": "nx lint"
   },
   "private": true,
   "dependencies": {
