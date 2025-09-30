@@ -14,45 +14,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
+    - name: Build Docker image
+      run: |
+        docker build -t customer-app .
         
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'pnpm'
+    - name: Test Docker image
+      run: |
+        docker run --rm customer-app node --version
+        docker run --rm customer-app pnpm --version
         
-    - name: Install dependencies
-      run: pnpm install 
-      
-    - name: Build customer-app
-      run: pnpm run build
-      
-    - name: Test SSH Connection
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: 148.230.116.195
-        username: root
-        key: |
-          -----BEGIN OPENSSH PRIVATE KEY-----
-          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
-          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
-          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
-          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
-          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
-          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
-          -----END OPENSSH PRIVATE KEY-----
-        passphrase: amin
-        debug: true
-        script: |
-          echo "Testing SSH connection..."
-          echo "Hostname: $(hostname)"
-          echo "User: $(whoami)"
-          
-    - name: Copy built files and deployment script to server
+    - name: Copy Docker files to server
       uses: appleboy/scp-action@v0.1.7
       with:
         host: 148.230.116.195
@@ -67,8 +38,8 @@ jobs:
           UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
           -----END OPENSSH PRIVATE KEY-----
         passphrase: amin
-        source: "dist/apps/customer-app/*,deploy.sh"
-        target: "/tmp/"
+        source: "Dockerfile,docker-compose.yml,docker-compose.prod.yml"
+        target: "/var/project/"
         debug: true
         
     - name: Deploy to server
@@ -88,15 +59,25 @@ jobs:
         passphrase: amin
         debug: true
         script: |
-          # Make deployment script executable
-          chmod +x /tmp/deploy.sh
+          # Navigate to project directory
+          cd /var/project
           
-          # Move built files to proper location for deployment script
-          mkdir -p /tmp/dist/apps/customer-app
-          cp -r /tmp/customer-app/* /tmp/dist/apps/customer-app/ 2>/dev/null || echo "Files already in correct location"
+          # Stop existing container
+          docker stop customer-app || true
+          docker rm customer-app || true
           
-          # Run deployment script
-          /tmp/deploy.sh
+          # Build Docker image on server
+          docker build -t customer-app:latest .
           
-          # Clean up
-          rm -rf /tmp/deploy.sh /tmp/customer-app /tmp/dist
+          # Run new container
+          docker run -d \
+            --name customer-app \
+            --restart unless-stopped \
+            -p 3000:3000 \
+            customer-app:latest
+          
+          # Show running containers
+          docker ps
+          
+          # Show container logs
+          docker logs customer-app
