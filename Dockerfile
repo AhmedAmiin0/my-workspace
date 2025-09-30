@@ -9,7 +9,6 @@ WORKDIR /app
 
 # Copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/customer-app/package.json ./apps/customer-app/
 
 # Install dependencies
 RUN pnpm install 
@@ -33,7 +32,6 @@ WORKDIR /app
 
 # Copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/customer-app/package.json ./apps/customer-app/
 
 # Install only production dependencies
 RUN pnpm install --prod
