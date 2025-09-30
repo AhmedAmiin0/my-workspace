@@ -1,0 +1,32 @@
+# Development Dockerfile for Nx customer-app
+FROM node:18-alpine
+
+# Install pnpm
+RUN npm install -g pnpm@8
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/customer-app/package.json ./apps/customer-app/
+
+# Install all dependencies (including dev dependencies)
+RUN pnpm install
+
+# Copy source code
+COPY . .
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nestjs -u 1001
+
+# Change ownership of the app directory
+RUN chown -R nestjs:nodejs /app
+USER nestjs
+
+# Expose port
+EXPOSE 3000
+
+# Start in development mode
+CMD ["pnpm", "run", "start:dev"]

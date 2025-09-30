@@ -2,7 +2,11 @@
   "name": "@my-workspace/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "nx build customer-app",
+    "start:dev": "nx serve customer-app",
+    "start:prod": "node dist/apps/customer-app/main.js"
+  },
   "private": true,
   "dependencies": {
     "@nestjs/common": "^11.0.0",
