@@ -33,8 +33,8 @@ WORKDIR /app
 # Copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Install only production dependencies
-RUN pnpm install --prod
+# Install all dependencies (including dev dependencies needed for build)
+RUN pnpm install
 
 # Copy built application from builder stage
 COPY --from=builder /app/dist/apps/customer-app ./dist/apps/customer-app
@@ -52,7 +52,10 @@ EXPOSE 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+  CMD node -e "require('http').get('http://localhost:3000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+
+# Set production environment
+ENV NODE_ENV=production
 
 # Start the application
-CMD ["pnpm", "run", "start:prod"]
+CMD ["node", "dist/apps/customer-app/main.js"]

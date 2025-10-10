@@ -2,9 +2,7 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
@@ -69,11 +67,12 @@ jobs:
           # Build Docker image on server
           docker build -t customer-app:latest .
           
-          # Run new container
+          # Run new container in production mode
           docker run -d \
             --name customer-app \
             --restart unless-stopped \
             -p 3000:3000 \
+            -e NODE_ENV=production \
             customer-app:latest
           
           # Show running containers
@@ -81,3 +80,14 @@ jobs:
           
           # Show container logs
           docker logs customer-app
+          
+          # Check if container is running
+          if ! docker ps | grep -q customer-app; then
+            echo "Container failed to start. Checking logs..."
+            docker logs customer-app
+            exit 1
+          fi
+          
+          # Test the health endpoint
+          sleep 10
+          curl -f http://localhost:3000/api/health || echo "Health check failed"
