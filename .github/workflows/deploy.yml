@@ -150,7 +150,6 @@ jobs:
 
   build-and-deploy-frontend:
     runs-on: ubuntu-latest
-    needs: build-and-deploy-backend
     
     steps:
     - name: Checkout code
@@ -273,7 +272,6 @@ jobs:
 
   trigger-android-build:
     runs-on: ubuntu-latest
-    needs: build-and-deploy-frontend
     timeout-minutes: 5  # Short timeout to ensure we don't wait
     
     steps:
