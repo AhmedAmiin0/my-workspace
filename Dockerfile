@@ -32,9 +32,8 @@ COPY . .
 # Build stage
 FROM base AS builder
 
-# Copy the pre-built application from local build
+# The dist directory is already copied from the base stage in COPY . .
 WORKDIR /app/backend-apps
-COPY backend-apps/dist/customer-backend ./dist/customer-backend
 
 # Production stage
 FROM node:18-alpine AS production
@@ -89,4 +88,4 @@ ENV NODE_PATH=/app/backend-apps/customer-backend/node_modules
 
 # Start the application
 WORKDIR /app/backend-apps
-CMD ["node", "dist/customer-backend/src/main.js"]
+CMD ["node", "customer-backend/dist/customer-backend/src/main.js"]
