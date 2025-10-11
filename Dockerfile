@@ -8,18 +8,26 @@ RUN apk add --no-cache postgresql-client mongodb-tools redis mysql-client
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Copy workspace configuration
+COPY pnpm-workspace.yaml ./
 
-# Install dependencies
-RUN pnpm install 
-# Copy source code
+# Copy backend workspace files
+COPY backend-apps/package.json backend-apps/pnpm-lock.yaml ./backend-apps/
+COPY backend-apps/nx.json backend-apps/tsconfig.base.json ./backend-apps/
+
+# Install dependencies in backend workspace
+WORKDIR /app/backend-apps
+RUN pnpm install
+
+# Copy all source code
+WORKDIR /app
 COPY . .
 
 # Build stage
 FROM base AS builder
 
-# Build the application
+# Build the application from backend workspace
+WORKDIR /app/backend-apps
 RUN pnpm run build
 
 # Production stage
@@ -32,14 +40,19 @@ RUN apk add --no-cache postgresql-client mongodb-tools redis mysql-client
 # Create app directory
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Copy workspace configuration
+COPY pnpm-workspace.yaml ./
 
-# Install all dependencies (including dev dependencies needed for build)
-RUN pnpm install
+# Copy backend workspace files
+COPY backend-apps/package.json backend-apps/pnpm-lock.yaml ./backend-apps/
+COPY backend-apps/nx.json backend-apps/tsconfig.base.json ./backend-apps/
+
+# Install production dependencies in backend workspace
+WORKDIR /app/backend-apps
+RUN pnpm install --prod
 
 # Copy built application from builder stage
-COPY --from=builder /app/dist/backend-apps/customer-backend ./dist/backend-apps/customer-backend
+COPY --from=builder /app/backend-apps/dist/customer-backend ./dist/customer-backend
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs
@@ -62,4 +75,5 @@ ENV NX_CLOUD_DISTRIBUTED_EXECUTION=false
 ENV NX_CLOUD_NO_TIMEOUTS=true
 
 # Start the application
-CMD ["node", "dist/backend-apps/customer-backend/main.js"]
+WORKDIR /app/backend-apps
+CMD ["node", "dist/customer-backend/main.js"]

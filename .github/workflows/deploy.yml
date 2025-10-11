@@ -3,25 +3,46 @@ name: Build and Deploy
 on:
   push:
     branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build-and-deploy-backend:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install dependencies
+      run: |
+        cd backend-apps
+        pnpm install
+        
+    - name: Build backend
+      run: |
+        cd backend-apps
+        pnpm run build:prod
+        
     - name: Build Docker image
       run: |
-        docker build -t customer-backend .
+        docker build -f Dockerfile -t customer-backend .
         
     - name: Test Docker image
       run: |
         docker run --rm customer-backend node --version
         docker run --rm customer-backend pnpm --version
         
-    - name: Copy all files to server
+    - name: Copy backend files to server
       uses: appleboy/scp-action@v0.1.7
       with:
         host: 148.230.116.195
@@ -60,12 +81,12 @@ jobs:
           # Navigate to project directory
           cd /var/project
           
-          # Stop existing container
+          # Stop existing containers
           docker stop customer-backend || true
           docker rm customer-backend || true
           
           # Build Docker image on server
-          docker build -t customer-backend:latest .
+          docker build -f Dockerfile -t customer-backend:latest .
           
           # Run new container in production mode
           docker run -d \
@@ -73,6 +94,9 @@ jobs:
             --restart unless-stopped \
             -p 3000:3000 \
             -e NODE_ENV=production \
+            -e DATABASE_URL=postgresql://postgres:password@postgres:5432/customer_app \
+            -e MONGODB_URI=mongodb://mongo:27017/customer_app \
+            -e REDIS_URL=redis://redis:6379 \
             customer-backend:latest
           
           # Show running containers
@@ -90,4 +114,50 @@ jobs:
           
           # Test the health endpoint
           sleep 10
-          curl -f http://localhost:3000/api/health || echo "Health check failed"
+          curl -f http://localhost:3000/health || echo "Health check failed"
+
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install dependencies
+      run: |
+        cd frontend-apps
+        pnpm install
+        
+    - name: Build frontend
+      run: |
+        cd frontend-apps
+        nx build customer-app
+        
+    - name: Copy frontend files to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: 148.230.116.195
+        username: root
+        key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
+          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
+          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
+          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
+          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
+          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
+          -----END OPENSSH PRIVATE KEY-----
+        passphrase: amin
+        source: "frontend-apps/dist/"
+        target: "/var/www/customer-app/"
+        debug: true

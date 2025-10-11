@@ -8,17 +8,26 @@ RUN apk add --no-cache postgresql-client mongodb-tools redis mysql-client
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Copy workspace configuration
+COPY pnpm-workspace.yaml ./
 
-# Install all dependencies (including dev dependencies)
+# Copy backend workspace files
+COPY backend-apps/package.json backend-apps/pnpm-lock.yaml ./backend-apps/
+COPY backend-apps/nx.json backend-apps/tsconfig.base.json ./backend-apps/
+
+# Install dependencies in backend workspace
+WORKDIR /app/backend-apps
 RUN pnpm install
 
-# Copy source code
+# Copy all source code
+WORKDIR /app
 COPY . .
 
 # Create dist directory
-RUN mkdir -p /app/dist
+RUN mkdir -p /app/backend-apps/dist
+
+# Make start script executable
+RUN chmod +x /app/backend-apps/customer-backend/start-dev.sh
 
 # Expose port
 EXPOSE 3000
@@ -27,5 +36,6 @@ EXPOSE 3000
 ENV NX_CLOUD_DISTRIBUTED_EXECUTION=false
 ENV NX_CLOUD_NO_TIMEOUTS=true
 
-# Start in development mode with file watching
+# Start in development mode with file watching (from backend-apps workspace)
+WORKDIR /app/backend-apps
 CMD ["pnpm", "run", "start:dev"]

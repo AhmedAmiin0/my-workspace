@@ -38,12 +38,24 @@
   "fileMap": {
     "nonProjectFiles": [
       {
-        "file": ".nx/workspace-data/project-graph.json",
-        "hash": "15089752911085203402"
+        "file": ".nx/workspace-data/webpack-7566275343909617285.hash",
+        "hash": "1601260995429209598"
       },
       {
         "file": "tsconfig.base.json",
         "hash": "1475520879020131025"
+      },
+      {
+        "file": ".nx/workspace-data/file-map.json",
+        "hash": "3061723843514603484"
+      },
+      {
+        "file": ".nx/workspace-data/d/daemon.log",
+        "hash": "15611084769539032073"
+      },
+      {
+        "file": ".nx/workspace-data/source-maps.json",
+        "hash": "10828224502381485651"
       },
       {
         "file": "nx.json",
@@ -54,40 +66,28 @@
         "hash": "9371181399969497539"
       },
       {
-        "file": ".nx/workspace-data/d/daemon.log",
-        "hash": "12437613757936990217"
-      },
-      {
-        "file": ".nx/workspace-data/jest-7930610538513362720.hash",
-        "hash": "513468978831542579"
-      },
-      {
-        "file": "package.json",
-        "hash": "17261678242643498646"
-      },
-      {
-        "file": ".nx/workspace-data/webpack-7566275343909617285.hash",
-        "hash": "1601260995429209598"
-      },
-      {
-        "file": ".nx/workspace-data/b554dc5e-10d0-4341-aab5-014f8fe42e16.db-wal",
-        "hash": "10885685454318019746"
+        "file": ".nx/workspace-data/eslint-2654242865465226088.hash",
+        "hash": "8280985277725161562"
       },
       {
         "file": ".nx/workspace-data/docker-9356765260042298600.hash",
         "hash": "1389868326933519382"
       },
       {
-        "file": ".nx/workspace-data/source-maps.json",
-        "hash": "10828224502381485651"
+        "file": ".nx/workspace-data/project-graph.json",
+        "hash": "18182332907990742667"
       },
       {
-        "file": ".nx/workspace-data/file-map.json",
-        "hash": "3595518015848435761"
+        "file": "package.json",
+        "hash": "17261678242643498646"
       },
       {
-        "file": ".nx/workspace-data/eslint-2654242865465226088.hash",
-        "hash": "8280985277725161562"
+        "file": ".nx/workspace-data/b554dc5e-10d0-4341-aab5-014f8fe42e16.db-wal",
+        "hash": "4706318760152271421"
+      },
+      {
+        "file": ".nx/workspace-data/jest-7930610538513362720.hash",
+        "hash": "513468978831542579"
       }
     ],
     "projectFileMap": {
