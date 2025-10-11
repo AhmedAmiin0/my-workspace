@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "CustomerApp",
-    "slug": "@frontend-apps/customer-app",
+    "slug": "customer-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "@frontend-apps/customer-app",
+    "scheme": "customer-app",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.holdmycup.customerapp"
     },
     "web": {
       "bundler": "metro",
@@ -32,6 +33,11 @@
           "backgroundColor": "#ffffff"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "cb965a27-b7ee-43eb-bdc0-d862f942a09d"
+      }
+    }
   }
 }
