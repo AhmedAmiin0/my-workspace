@@ -42,6 +42,16 @@ jobs:
         docker run --rm customer-backend node --version
         docker run --rm customer-backend pnpm --version
         
+    - name: Verify backend files exist
+      run: |
+        echo "Checking backend files..."
+        ls -la backend-apps/
+        if [ ! -d "backend-apps" ]; then
+          echo "❌ backend-apps directory not found!"
+          exit 1
+        fi
+        echo "✅ Backend files verified"
+        
     - name: Copy backend files to server
       uses: appleboy/scp-action@v0.1.7
       with:
@@ -57,7 +67,7 @@ jobs:
           UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
           -----END OPENSSH PRIVATE KEY-----
         passphrase: amin
-        source: "."
+        source: "backend-apps/"
         target: "/var/project/"
         debug: true
         
@@ -166,6 +176,18 @@ jobs:
         cd frontend-apps
         npx nx export customer-app --platform web
         
+    - name: Verify frontend files exist
+      run: |
+        echo "Checking frontend files..."
+        ls -la frontend-apps/apps/customer-app/dist/
+        if [ ! -d "frontend-apps/apps/customer-app/dist" ]; then
+          echo "❌ frontend dist directory not found!"
+          echo "Available directories:"
+          ls -la frontend-apps/apps/customer-app/
+          exit 1
+        fi
+        echo "✅ Frontend files verified"
+        
     - name: Copy frontend files to server
       uses: appleboy/scp-action@v0.1.7
       with:
@@ -181,7 +203,7 @@ jobs:
           UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
           -----END OPENSSH PRIVATE KEY-----
         passphrase: amin
-        source: "frontend-apps/dist/"
+        source: "frontend-apps/apps/customer-app/dist/"
         target: "/var/www/customer-app/"
         debug: true
         
