@@ -85,7 +85,8 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 ENV NODE_ENV=production
 ENV NX_CLOUD_DISTRIBUTED_EXECUTION=false
 ENV NX_CLOUD_NO_TIMEOUTS=true
+ENV NODE_PATH=/app/backend-apps/customer-backend/node_modules
 
 # Start the application
-WORKDIR /app/backend-apps/customer-backend
-CMD ["node", "../dist/customer-backend/src/main.js"]
+WORKDIR /app/backend-apps
+CMD ["node", "dist/customer-backend/src/main.js"]
