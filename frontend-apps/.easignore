@@ -1,0 +1,7 @@
+.trunk/
+node_modules/
+.git/
+.nx/
+dist/
+tmp/
+*.log
