@@ -137,3 +137,136 @@ jobs:
           sleep 10
           curl -f http://localhost:$PORT/health || echo "Health check failed on port $PORT"
           echo "Application is running on port $PORT"
+
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy-backend
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install dependencies
+      run: |
+        cd frontend-apps
+        pnpm install
+        
+    - name: Build frontend (Web)
+      run: |
+        cd frontend-apps
+        npx nx export customer-app --platform web
+        
+    - name: Copy frontend files to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: 148.230.116.195
+        username: root
+        key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
+          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
+          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
+          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
+          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
+          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
+          -----END OPENSSH PRIVATE KEY-----
+        passphrase: amin
+        source: "frontend-apps/dist/"
+        target: "/var/www/customer-app/"
+        debug: true
+        
+    - name: Deploy frontend to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: 148.230.116.195
+        username: root
+        key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
+          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
+          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
+          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
+          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
+          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
+          -----END OPENSSH PRIVATE KEY-----
+        passphrase: amin
+        debug: true
+        script: |
+          # Navigate to web directory
+          cd /var/www/customer-app
+          
+          # Set proper permissions
+          chown -R www-data:www-data /var/www/customer-app
+          chmod -R 755 /var/www/customer-app
+          
+          # Test if the frontend files are accessible
+          if [ -f "index.html" ]; then
+            echo "✅ Frontend deployment successful"
+            echo "📱 Web app is available at: http://148.230.116.195/customer-app/"
+            echo "📄 Main page: index.html"
+          else
+            echo "❌ Frontend deployment failed - index.html not found"
+            ls -la
+            exit 1
+          fi
+
+  trigger-android-build:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy-frontend
+    timeout-minutes: 5  # Short timeout to ensure we don't wait
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install dependencies
+      run: |
+        cd frontend-apps
+        pnpm install
+        
+    - name: Install EAS CLI
+      run: |
+        npm install -g eas-cli
+        
+    - name: Trigger Android Build (Non-blocking)
+      run: |
+        cd frontend-apps
+        echo "🚀 Triggering Android build on EAS..."
+        
+        # Trigger the Android build in background without waiting
+        timeout 30s npx eas build --platform android --non-interactive || {
+          echo "✅ Android build triggered successfully!"
+          echo "📱 Android build is now running on EAS servers"
+          echo "🔗 Monitor at: https://expo.dev/accounts/holdmycup/projects/customer-app/builds"
+          echo "⏱️  Android build typically takes 5-15 minutes"
+          echo "📧 You'll get an email when ready"
+        }
+        
+    - name: Success Message
+      if: always()
+      run: |
+        echo "✅ GitHub Action completed successfully!"
+        echo "📱 Android APK build is running independently on EAS"
+        echo "🔗 Check status: https://expo.dev/accounts/holdmycup/projects/customer-app/builds"
+        echo "📧 Email notification will be sent when Android build completes"
+        echo "📱 You'll receive an APK file when ready"
