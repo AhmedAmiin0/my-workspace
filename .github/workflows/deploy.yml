@@ -81,18 +81,39 @@ jobs:
           # Navigate to project directory
           cd /var/project
           
-          # Stop existing containers
-          docker stop customer-backend || true
-          docker rm customer-backend || true
+          # Comprehensive cleanup of all containers and networks
+          echo "Performing comprehensive cleanup..."
+          
+          # Stop all running containers
+          docker stop $(docker ps -q) || true
+          
+          # Remove all containers
+          docker rm $(docker ps -aq) || true
+          
+          # Remove unused networks
+          docker network prune -f || true
+          
+          # Clean up any dangling images
+          docker image prune -f || true
+          
+          echo "Cleanup completed, starting fresh deployment..."
           
           # Build Docker image on server
           docker build -f Dockerfile -t customer-backend:latest .
+          
+          # Check if port 3000 is still in use and find an alternative
+          PORT=3000
+          while netstat -tuln | grep -q ":$PORT "; do
+            echo "Port $PORT is in use, trying next port..."
+            PORT=$((PORT + 1))
+          done
+          echo "Using port $PORT for the application"
           
           # Run new container in production mode
           docker run -d \
             --name customer-backend \
             --restart unless-stopped \
-            -p 3000:3000 \
+            -p $PORT:3000 \
             -e NODE_ENV=production \
             -e DATABASE_URL=postgresql://postgres:password@postgres:5432/customer_app \
             -e MONGODB_URI=mongodb://mongo:27017/customer_app \
@@ -114,4 +135,5 @@ jobs:
           
           # Test the health endpoint
           sleep 10
-          curl -f http://localhost:3000/health || echo "Health check failed"
+          curl -f http://localhost:$PORT/health || echo "Health check failed on port $PORT"
+          echo "Application is running on port $PORT"
