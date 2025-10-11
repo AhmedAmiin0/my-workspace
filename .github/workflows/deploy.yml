@@ -177,12 +177,16 @@ jobs:
         npm install -g eas-cli
 
     - name: Login to EAS
+      env:
+        EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
       run: |
         echo "Logging into EAS..."
-        # Login using EAS_TOKEN secret
-        eas login --non-interactive --token ${{ secrets.EAS_TOKEN }}
+        # Login using EXPO_TOKEN environment variable
+        eas whoami
 
     - name: Trigger Android Build (Non-blocking)
+      env:
+        EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
       run: |
         cd frontend-apps
         echo "🚀 Triggering Android build on EAS..."
