@@ -148,127 +148,6 @@ jobs:
           curl -f http://localhost:$PORT/health || echo "Health check failed on port $PORT"
           echo "Application is running on port $PORT"
 
-  build-and-deploy-frontend:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
-        
-    - name: Install dependencies
-      run: |
-        cd frontend-apps
-        pnpm install
-        
-    - name: Build frontend (Web)
-      run: |
-        cd frontend-apps
-        npx nx export customer-app --platform web
-        
-    - name: Verify frontend files exist
-      run: |
-        echo "Checking frontend files..."
-        ls -la frontend-apps/apps/customer-app/dist/
-        if [ ! -d "frontend-apps/apps/customer-app/dist" ]; then
-          echo "❌ frontend dist directory not found!"
-          echo "Available directories:"
-          ls -la frontend-apps/apps/customer-app/
-          exit 1
-        fi
-        echo "✅ Frontend files verified"
-        
-    - name: Copy frontend files to server
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: 148.230.116.195
-        username: root
-        key: |
-          -----BEGIN OPENSSH PRIVATE KEY-----
-          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
-          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
-          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
-          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
-          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
-          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
-          -----END OPENSSH PRIVATE KEY-----
-        passphrase: amin
-        source: "frontend-apps/apps/customer-app/dist/*"
-        target: "/var/www/customer-app/"
-        debug: true
-        
-    - name: Deploy frontend to server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: 148.230.116.195
-        username: root
-        key: |
-          -----BEGIN OPENSSH PRIVATE KEY-----
-          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
-          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
-          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
-          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
-          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
-          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
-          -----END OPENSSH PRIVATE KEY-----
-        passphrase: amin
-        debug: true
-        script: |
-          # Clean up target directory first
-          echo "Cleaning up target directory..."
-          rm -rf /var/www/customer-app/*
-          
-          # Navigate to web directory
-          cd /var/www/customer-app
-          
-          # Debug: Show what's in the directory after SCP
-          echo "Contents after SCP copy:"
-          ls -la
-          
-          # Check if files are in subdirectories and move them up
-          if [ -d "dist" ]; then
-            echo "Found dist directory, moving contents up..."
-            mv dist/* . 2>/dev/null || true
-            rmdir dist 2>/dev/null || true
-          fi
-          
-          if [ -d "frontend-apps" ]; then
-            echo "Found frontend-apps directory, moving contents up..."
-            find frontend-apps -name "*.html" -exec mv {} . \; 2>/dev/null || true
-            find frontend-apps -name "*.js" -exec mv {} . \; 2>/dev/null || true
-            find frontend-apps -name "*.css" -exec mv {} . \; 2>/dev/null || true
-            find frontend-apps -name "*.json" -exec mv {} . \; 2>/dev/null || true
-            rm -rf frontend-apps 2>/dev/null || true
-          fi
-          
-          # Set proper permissions
-          chown -R www-data:www-data /var/www/customer-app
-          chmod -R 755 /var/www/customer-app
-          
-          # Final debug: Show what's in the directory
-          echo "Final directory contents:"
-          ls -la
-          
-          # Test if the frontend files are accessible
-          if [ -f "index.html" ]; then
-            echo "✅ Frontend deployment successful"
-            echo "📱 Web app is available at: http://148.230.116.195/customer-app/"
-            echo "📄 Main page: index.html"
-          else
-            echo "❌ Frontend deployment failed - index.html not found"
-            echo "Available files:"
-            find . -type f -name "*.html" -o -name "*.js" -o -name "*.css" | head -10
-            exit 1
-          fi
 
   trigger-android-build:
     runs-on: ubuntu-latest
@@ -296,12 +175,28 @@ jobs:
     - name: Install EAS CLI
       run: |
         npm install -g eas-cli
-        
+
+    - name: Login to EAS
+      run: |
+        echo "Logging into EAS..."
+        # Note: You'll need to set up EAS_TOKEN as a repository secret
+        # eas login --non-interactive --token ${{ secrets.EAS_TOKEN }}
+        # For now, we'll use the existing login
+        eas whoami || echo "Not logged in, will use existing session"
+
     - name: Trigger Android Build (Non-blocking)
       run: |
         cd frontend-apps
         echo "🚀 Triggering Android build on EAS..."
-        
+
+        # Check if EAS is authenticated
+        if ! eas whoami > /dev/null 2>&1; then
+          echo "❌ EAS CLI is not authenticated. Please set up EAS_TOKEN secret or login manually."
+          echo "🔑 To fix this, add EAS_TOKEN as a repository secret with your EAS access token"
+          echo "📖 See: https://docs.expo.dev/eas-update/github-actions/"
+          exit 1
+        fi
+
         # Trigger the Android build in background without waiting
         timeout 30s npx eas build --platform android --non-interactive || {
           echo "✅ Android build triggered successfully!"
