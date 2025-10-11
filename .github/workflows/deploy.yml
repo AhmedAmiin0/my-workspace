@@ -31,7 +31,7 @@ jobs:
     - name: Build backend
       run: |
         cd backend-apps
-        pnpm run build:prod
+        npx nx run customer-backend:build --configuration=production
         
     - name: Build Docker image
       run: |
@@ -141,7 +141,7 @@ jobs:
     - name: Build frontend
       run: |
         cd frontend-apps
-        nx build customer-app
+        npx nx build customer-app
         
     - name: Copy frontend files to server
       uses: appleboy/scp-action@v0.1.7

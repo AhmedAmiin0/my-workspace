@@ -1,5 +1,8 @@
 packages:
+  - 'backend-apps'
+  - 'frontend-apps'
   - 'backend-apps/*'
+  - 'frontend-apps/*'
   - 'packages/*'
   - 'libs/*'
 

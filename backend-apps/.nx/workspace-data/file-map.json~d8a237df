@@ -38,87 +38,71 @@
   "fileMap": {
     "nonProjectFiles": [
       {
-        "file": ".nx/workspace-data/project-graph.json",
-        "hash": "14158473890308850619"
-      },
-      {
-        "file": ".nx/workspace-data/jest-7930610538513362720.hash",
-        "hash": "386123041147848462"
-      },
-      {
-        "file": ".nx/workspace-data/b554dc5e-10d0-4341-aab5-014f8fe42e16.db-wal",
-        "hash": "3646462123759218297"
+        "file": ".nx/workspace-data/docker-9356765260042298600.hash",
+        "hash": "1389868326933519382"
       },
       {
         "file": ".nx/workspace-data/b554dc5e-10d0-4341-aab5-014f8fe42e16.db-shm",
         "hash": "14771980706254180056"
       },
       {
-        "file": ".nx/workspace-data/docker-9356765260042298600.hash",
-        "hash": "1389868326933519382"
-      },
-      {
-        "file": ".nx/workspace-data/source-maps.json",
-        "hash": "12154856975109613703"
-      },
-      {
-        "file": ".nx/workspace-data/file-map.json",
-        "hash": "499704391925201711"
-      },
-      {
         "file": "package.json",
-        "hash": "6127219494526730875"
+        "hash": "10664116403127465939"
       },
       {
-        "file": ".nx/workspace-data/file-map.json~ab2a8c79",
-        "hash": "10442874611564138146"
-      },
-      {
-        "file": ".nx/workspace-data/file-map.json~d8a237df",
-        "hash": "10442874611564138146"
-      },
-      {
-        "file": ".nx/workspace-data/d/daemon.log",
-        "hash": "12427015219113493397"
+        "file": ".nx/workspace-data/eslint-2654242865465226088.hash",
+        "hash": "15799777633652716730"
       },
       {
         "file": "nx.json",
         "hash": "17840467841019551410"
       },
       {
-        "file": ".nx/workspace-data/file-map.json~e8801e74",
-        "hash": "10442874611564138146"
+        "file": ".nx/workspace-data/jest-7930610538513362720.hash",
+        "hash": "10075521299370000549"
+      },
+      {
+        "file": ".nx/workspace-data/source-maps.json",
+        "hash": "16792792488925352605"
+      },
+      {
+        "file": ".nx/workspace-data/b554dc5e-10d0-4341-aab5-014f8fe42e16.db-wal",
+        "hash": "3553025441526978478"
+      },
+      {
+        "file": ".nx/workspace-data/d/daemon.log",
+        "hash": "2722351386778872541"
+      },
+      {
+        "file": ".nx/workspace-data/project-graph.json",
+        "hash": "14233209100431125250"
       },
       {
         "file": "tsconfig.base.json",
         "hash": "1475520879020131025"
       },
       {
+        "file": ".nx/workspace-data/file-map.json",
+        "hash": "2150688800247898888"
+      },
+      {
         "file": ".nx/workspace-data/webpack-7566275343909617285.hash",
-        "hash": "9605061690750068297"
-      },
-      {
-        "file": ".nx/workspace-data/eslint-2654242865465226088.hash",
-        "hash": "5332156266877004884"
-      },
-      {
-        "file": ".nx/workspace-data/file-map.json~dfef7338",
-        "hash": "10442874611564138146"
+        "hash": "5672908057500741789"
       }
     ],
     "projectFileMap": {
       "customer-backend": [
         {
           "file": "customer-backend/docker-compose.dev.yml",
-          "hash": "3683923851683195263"
+          "hash": "10022672426468907396"
         },
         {
           "file": "customer-backend/docker-compose.prod.yml",
-          "hash": "11684612279483794184"
+          "hash": "3982204616047285536"
         },
         {
           "file": "customer-backend/docker-compose.yml",
-          "hash": "1786800088683269675"
+          "hash": "13615776322214986169"
         },
         {
           "file": "customer-backend/eslint.config.mjs",
@@ -127,10 +111,6 @@
         {
           "file": "customer-backend/jest.config.ts",
           "hash": "12179607191770863259"
-        },
-        {
-          "file": "customer-backend/package.json",
-          "hash": "4733541032186511150"
         },
         {
           "file": "customer-backend/project.json",
@@ -192,3 +172,4 @@
     }
   },
   "externalNodesHash": "3244421341483603138"
+}

@@ -12,74 +12,6 @@
       "customer-backend/webpack.config.js",
       "@nx/webpack/plugin"
     ],
-    "targets.build": [
-      "customer-backend/project.json",
-      "nx/core/project-json"
-    ],
-    "targets.build.options": [
-      "customer-backend/project.json",
-      "nx/core/project-json"
-    ],
-    "targets.build.cache": [
-      "nx.json",
-      "nx/target-defaults"
-    ],
-    "targets.build.dependsOn": [
-      "nx.json",
-      "nx/target-defaults"
-    ],
-    "targets.build.inputs": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
-    "targets.build.outputs": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
-    "targets.build.metadata": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
-    "targets.build.executor": [
-      "customer-backend/project.json",
-      "nx/core/project-json"
-    ],
-    "targets.build.options.cwd": [
-      "customer-backend/project.json",
-      "nx/core/project-json"
-    ],
-    "targets.build.options.args": [
-      "customer-backend/project.json",
-      "nx/core/project-json"
-    ],
-    "targets.build.options.command": [
-      "customer-backend/project.json",
-      "nx/core/project-json"
-    ],
-    "targets.build.metadata.technologies": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
-    "targets.build.metadata.technologies.0": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
-    "targets.build.metadata.description": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
-    "targets.build.metadata.help": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
-    "targets.build.metadata.help.command": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
-    "targets.build.metadata.help.example": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
     "targets.preview": [
       "customer-backend/webpack.config.js",
       "@nx/webpack/plugin"
@@ -133,14 +65,6 @@
       "@nx/webpack/plugin"
     ],
     "targets.preview.metadata.help.example": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
-    "targets.build-deps": [
-      "customer-backend/webpack.config.js",
-      "@nx/webpack/plugin"
-    ],
-    "targets.build-deps.dependsOn": [
       "customer-backend/webpack.config.js",
       "@nx/webpack/plugin"
     ],
@@ -296,6 +220,34 @@
       "customer-backend/project.json",
       "nx/core/project-json"
     ],
+    "tags": [
+      "customer-backend/package.json",
+      "nx/core/package-json"
+    ],
+    "tags.npm:private": [
+      "customer-backend/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.targetGroups": [
+      "customer-backend/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.js": [
+      "customer-backend/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.js.packageName": [
+      "customer-backend/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.js.packageVersion": [
+      "customer-backend/package.json",
+      "nx/core/package-json"
+    ],
+    "metadata.js.isInPackageManagerWorkspaces": [
+      "customer-backend/package.json",
+      "nx/core/package-json"
+    ],
     "$schema": [
       "customer-backend/project.json",
       "nx/core/project-json"
@@ -304,7 +256,23 @@
       "customer-backend/project.json",
       "nx/core/project-json"
     ],
-    "tags": [
+    "targets.build": [
+      "customer-backend/project.json",
+      "nx/core/project-json"
+    ],
+    "targets.build.executor": [
+      "customer-backend/project.json",
+      "nx/core/project-json"
+    ],
+    "targets.build.outputs": [
+      "customer-backend/project.json",
+      "nx/core/project-json"
+    ],
+    "targets.build.defaultConfiguration": [
+      "customer-backend/project.json",
+      "nx/core/project-json"
+    ],
+    "targets.build.options": [
       "customer-backend/project.json",
       "nx/core/project-json"
     ],
@@ -312,11 +280,31 @@
       "customer-backend/project.json",
       "nx/core/project-json"
     ],
+    "targets.build.options.outputPath": [
+      "customer-backend/project.json",
+      "nx/core/project-json"
+    ],
+    "targets.build.options.main": [
+      "customer-backend/project.json",
+      "nx/core/project-json"
+    ],
+    "targets.build.options.tsConfig": [
+      "customer-backend/project.json",
+      "nx/core/project-json"
+    ],
+    "targets.build.options.assets": [
+      "customer-backend/project.json",
+      "nx/core/project-json"
+    ],
     "targets.build.configurations.development": [
       "customer-backend/project.json",
       "nx/core/project-json"
     ],
-    "targets.build.configurations.development.args": [
+    "targets.build.configurations.development.optimization": [
+      "customer-backend/project.json",
+      "nx/core/project-json"
+    ],
+    "targets.build.configurations.development.sourceMap": [
       "customer-backend/project.json",
       "nx/core/project-json"
     ],
@@ -324,7 +312,11 @@
       "customer-backend/project.json",
       "nx/core/project-json"
     ],
-    "targets.build.configurations.production.args": [
+    "targets.build.configurations.production.optimization": [
+      "customer-backend/project.json",
+      "nx/core/project-json"
+    ],
+    "targets.build.configurations.production.sourceMap": [
       "customer-backend/project.json",
       "nx/core/project-json"
     ],
@@ -511,6 +503,14 @@
     "targets.docker:down.options.cwd": [
       "customer-backend/project.json",
       "nx/core/project-json"
+    ],
+    "targets.build.cache": [
+      "nx.json",
+      "nx/target-defaults"
+    ],
+    "targets.build.dependsOn": [
+      "nx.json",
+      "nx/target-defaults"
     ],
     "targets.build.parallelism": [
       "nx.json",

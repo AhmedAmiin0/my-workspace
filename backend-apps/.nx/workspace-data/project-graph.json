@@ -6,65 +6,44 @@
       "data": {
         "root": "customer-backend",
         "projectType": "application",
-        "metadata": {},
+        "metadata": {
+          "targetGroups": {},
+          "js": {
+            "packageName": "@backend-apps/customer-backend",
+            "packageVersion": "0.0.0",
+            "isInPackageManagerWorkspaces": false
+          }
+        },
         "targets": {
           "build": {
-            "cache": true,
-            "dependsOn": [
-              "^build"
-            ],
-            "inputs": [
-              "production",
-              "^production",
-              {
-                "externalDependencies": [
-                  "webpack-cli"
-                ]
-              }
-            ],
+            "executor": "@nx/js:tsc",
             "outputs": [
-              "{workspaceRoot}/..\\dist\\backend\\customer-backend"
+              "{options.outputPath}"
             ],
-            "metadata": {
-              "technologies": [
-                "webpack"
-              ],
-              "description": "Runs Webpack build",
-              "help": {
-                "command": "npx webpack-cli build --help",
-                "example": {
-                  "options": {
-                    "json": "stats.json"
-                  },
-                  "args": [
-                    "--profile"
-                  ]
-                }
-              }
-            },
-            "executor": "nx:run-commands",
+            "defaultConfiguration": "production",
             "options": {
-              "cwd": "customer-backend",
-              "args": [
-                "--node-env=production"
-              ],
-              "command": "webpack-cli build"
+              "outputPath": "dist/customer-backend",
+              "main": "customer-backend/src/main.ts",
+              "tsConfig": "customer-backend/tsconfig.app.json",
+              "assets": [
+                "customer-backend/src/assets"
+              ]
             },
             "configurations": {
               "development": {
-                "args": [
-                  "--node-env=development",
-                  "--watch"
-                ]
+                "optimization": false,
+                "sourceMap": true
               },
               "production": {
-                "args": [
-                  "--node-env=production",
-                  "--mode=production"
-                ]
+                "optimization": true,
+                "sourceMap": false
               }
             },
-            "parallelism": true
+            "parallelism": true,
+            "cache": true,
+            "dependsOn": [
+              "^build"
+            ]
           },
           "serve": {
             "executor": "@nx/js:node",
@@ -300,9 +279,11 @@
           }
         },
         "name": "customer-backend",
+        "tags": [
+          "npm:private"
+        ],
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "customer-backend/src",
-        "tags": [],
         "implicitDependencies": []
       }
     }
@@ -313,5 +294,5 @@
   },
   "version": "6.0",
   "errors": [],
-  "computedAt": 1760179516640
+  "computedAt": 1760185396759
 }

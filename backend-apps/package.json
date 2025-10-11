@@ -3,16 +3,16 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "nx run customer-backend:build",
-    "build:prod": "nx run customer-backend:build --configuration=production",
-    "start:dev": "nx run customer-backend:serve",
+    "build": "npx nx run customer-backend:build",
+    "build:prod": "npx nx run customer-backend:build --configuration=production",
+    "start:dev": "npx nx run customer-backend:serve",
     "start:prod": "node dist/customer-backend/main.js",
     "prod": "npm run build:prod && npm run start:prod",
-    "docker:dev": "nx run customer-backend:docker:dev",
-    "docker:prod": "nx run customer-backend:docker:prod",
-    "docker:down": "nx run customer-backend:docker:down",
-    "test": "nx test",
-    "lint": "nx lint"
+    "docker:dev": "npx nx run customer-backend:docker:dev",
+    "docker:prod": "npx nx run customer-backend:docker:prod",
+    "docker:down": "npx nx run customer-backend:docker:down",
+    "test": "npx nx test",
+    "lint": "npx nx lint"
   },
   "private": true,
   "dependencies": {
@@ -28,6 +28,7 @@
     "redis": "^4.6.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
+    "tslib": "^2.8.1",
     "typeorm": "^0.3.17"
   },
   "devDependencies": {

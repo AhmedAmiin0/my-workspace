@@ -6,18 +6,23 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
-        "command": "webpack-cli build",
-        "args": ["--node-env=production"],
-        "cwd": "customer-backend"
+        "outputPath": "dist/customer-backend",
+        "main": "customer-backend/src/main.ts",
+        "tsConfig": "customer-backend/tsconfig.app.json",
+        "assets": ["customer-backend/src/assets"]
       },
       "configurations": {
         "development": {
-          "args": ["--node-env=development", "--watch"]
+          "optimization": false,
+          "sourceMap": true
         },
         "production": {
-          "args": ["--node-env=production", "--mode=production"]
+          "optimization": true,
+          "sourceMap": false
         }
       }
     },

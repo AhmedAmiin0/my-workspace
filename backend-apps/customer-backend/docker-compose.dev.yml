@@ -1,7 +1,7 @@
 services:
   customer-backend-dev:
     build:
-      context: ../..
+      context: ..
       dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
@@ -21,7 +21,7 @@ services:
       - mongo
       - redis
     volumes:
-      - ../..:/app
+      - ..:/app
       - /app/backend-apps/node_modules
       - /app/backend-apps/dist
       - /app/backend-apps/.nx

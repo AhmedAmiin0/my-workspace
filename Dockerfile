@@ -12,11 +12,17 @@ WORKDIR /app
 COPY pnpm-workspace.yaml ./
 
 # Copy backend workspace files
-COPY backend-apps/package.json backend-apps/pnpm-lock.yaml ./backend-apps/
+COPY backend-apps/package.json ./backend-apps/
+COPY backend-apps/customer-backend/package.json ./backend-apps/customer-backend/
+COPY pnpm-lock.yaml ./backend-apps/
 COPY backend-apps/nx.json backend-apps/tsconfig.base.json ./backend-apps/
 
 # Install dependencies in backend workspace
 WORKDIR /app/backend-apps
+RUN pnpm install
+
+# Install dependencies in customer-backend
+WORKDIR /app/backend-apps/customer-backend
 RUN pnpm install
 
 # Copy all source code
@@ -26,9 +32,9 @@ COPY . .
 # Build stage
 FROM base AS builder
 
-# Build the application from backend workspace
+# Copy the pre-built application from local build
 WORKDIR /app/backend-apps
-RUN pnpm run build
+COPY backend-apps/dist/customer-backend ./dist/customer-backend
 
 # Production stage
 FROM node:18-alpine AS production
@@ -44,11 +50,17 @@ WORKDIR /app
 COPY pnpm-workspace.yaml ./
 
 # Copy backend workspace files
-COPY backend-apps/package.json backend-apps/pnpm-lock.yaml ./backend-apps/
+COPY backend-apps/package.json ./backend-apps/
+COPY backend-apps/customer-backend/package.json ./backend-apps/customer-backend/
+COPY pnpm-lock.yaml ./backend-apps/
 COPY backend-apps/nx.json backend-apps/tsconfig.base.json ./backend-apps/
 
 # Install production dependencies in backend workspace
 WORKDIR /app/backend-apps
+RUN pnpm install --prod
+
+# Install production dependencies in customer-backend
+WORKDIR /app/backend-apps/customer-backend
 RUN pnpm install --prod
 
 # Copy built application from builder stage
@@ -75,5 +87,5 @@ ENV NX_CLOUD_DISTRIBUTED_EXECUTION=false
 ENV NX_CLOUD_NO_TIMEOUTS=true
 
 # Start the application
-WORKDIR /app/backend-apps
-CMD ["node", "dist/customer-backend/main.js"]
+WORKDIR /app/backend-apps/customer-backend
+CMD ["node", "../dist/customer-backend/src/main.js"]
