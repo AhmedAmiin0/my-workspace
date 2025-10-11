@@ -4,9 +4,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug customer-app with Nx",
+      "name": "Debug customer-backend with Nx",
       "runtimeExecutable": "pnpm exec",
-      "runtimeArgs": ["nx", "serve", "customer-app"],
+      "runtimeArgs": ["nx", "serve", "customer-backend"],
       "env": {
         "NODE_OPTIONS": "--inspect=9229"
       },
@@ -15,7 +15,7 @@
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/apps/customer-app/dist/**/*.(m|c|)js",
+        "${workspaceFolder}/backend-apps/customer-backend/dist/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
     }

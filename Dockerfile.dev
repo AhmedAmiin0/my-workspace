@@ -1,15 +1,15 @@
-# Development Dockerfile for Nx customer-app
+# Development Dockerfile for Nx customer-backend
 FROM node:18-alpine
 
-# Install pnpm
+# Install pnpm and database client tools
 RUN npm install -g pnpm@8
+RUN apk add --no-cache postgresql-client mongodb-tools redis mysql-client
 
 # Set working directory
 WORKDIR /app
 
 # Copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/customer-app/package.json ./apps/customer-app/
 
 # Install all dependencies (including dev dependencies)
 RUN pnpm install
@@ -17,16 +17,15 @@ RUN pnpm install
 # Copy source code
 COPY . .
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nestjs -u 1001
-
-# Change ownership of the app directory
-RUN chown -R nestjs:nodejs /app
-USER nestjs
+# Create dist directory
+RUN mkdir -p /app/dist
 
 # Expose port
 EXPOSE 3000
 
-# Start in development mode
+# Set environment variables to disable Nx Cloud
+ENV NX_CLOUD_DISTRIBUTED_EXECUTION=false
+ENV NX_CLOUD_NO_TIMEOUTS=true
+
+# Start in development mode with file watching
 CMD ["pnpm", "run", "start:dev"]

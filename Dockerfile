@@ -1,8 +1,9 @@
-# Multi-stage build for Nx customer-app
+# Multi-stage build for Nx customer-backend
 FROM node:18-alpine AS base
 
-# Install pnpm
+# Install pnpm and database client tools
 RUN npm install -g pnpm@8
+RUN apk add --no-cache postgresql-client mongodb-tools redis mysql-client
 
 # Set working directory
 WORKDIR /app
@@ -24,8 +25,9 @@ RUN pnpm run build
 # Production stage
 FROM node:18-alpine AS production
 
-# Install pnpm
+# Install pnpm and database client tools
 RUN npm install -g pnpm@8
+RUN apk add --no-cache postgresql-client mongodb-tools redis mysql-client
 
 # Create app directory
 WORKDIR /app
@@ -37,7 +39,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install
 
 # Copy built application from builder stage
-COPY --from=builder /app/dist/apps/customer-app ./dist/apps/customer-app
+COPY --from=builder /app/dist/backend-apps/customer-backend ./dist/backend-apps/customer-backend
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs
@@ -56,6 +58,8 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 # Set production environment
 ENV NODE_ENV=production
+ENV NX_CLOUD_DISTRIBUTED_EXECUTION=false
+ENV NX_CLOUD_NO_TIMEOUTS=true
 
 # Start the application
-CMD ["node", "dist/apps/customer-app/main.js"]
+CMD ["node", "dist/backend-apps/customer-backend/main.js"]

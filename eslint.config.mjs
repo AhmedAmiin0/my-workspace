@@ -14,7 +14,17 @@ export default [
         'error',
         {
           enforceBuildableLibDependency: true,
-          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
+          allow: [
+            '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$',
+            '@nestjs/*',
+            'typeorm',
+            'mongoose',
+            'redis',
+            '^@nestjs/',
+            '^typeorm',
+            '^mongoose',
+            '^redis'
+          ],
           depConstraints: [
             {
               sourceTag: '*',
@@ -38,5 +48,11 @@ export default [
     ],
     // Override or add rules here
     rules: {},
+  },
+  {
+    files: ['backend-apps/customer-backend/src/database/**/*.ts'],
+    rules: {
+      '@nx/enforce-module-boundaries': 'off',
+    },
   },
 ];

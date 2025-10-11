@@ -14,12 +14,12 @@ jobs:
       
     - name: Build Docker image
       run: |
-        docker build -t customer-app .
+        docker build -t customer-backend .
         
     - name: Test Docker image
       run: |
-        docker run --rm customer-app node --version
-        docker run --rm customer-app pnpm --version
+        docker run --rm customer-backend node --version
+        docker run --rm customer-backend pnpm --version
         
     - name: Copy all files to server
       uses: appleboy/scp-action@v0.1.7
@@ -61,30 +61,30 @@ jobs:
           cd /var/project
           
           # Stop existing container
-          docker stop customer-app || true
-          docker rm customer-app || true
+          docker stop customer-backend || true
+          docker rm customer-backend || true
           
           # Build Docker image on server
-          docker build -t customer-app:latest .
+          docker build -t customer-backend:latest .
           
           # Run new container in production mode
           docker run -d \
-            --name customer-app \
+            --name customer-backend \
             --restart unless-stopped \
             -p 3000:3000 \
             -e NODE_ENV=production \
-            customer-app:latest
+            customer-backend:latest
           
           # Show running containers
           docker ps
           
           # Show container logs
-          docker logs customer-app
+          docker logs customer-backend
           
           # Check if container is running
-          if ! docker ps | grep -q customer-app; then
+          if ! docker ps | grep -q customer-backend; then
             echo "Container failed to start. Checking logs..."
-            docker logs customer-app
+            docker logs customer-backend
             exit 1
           fi
           
