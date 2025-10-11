@@ -2,7 +2,10 @@
   "name": "@frontend-apps/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "npx nx run customer-app:build",
+    "start": "npx nx run customer-app:serve"
+  },
   "private": true,
   "dependencies": {
     "@expo/metro-config": "~54.0.6",
