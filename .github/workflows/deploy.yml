@@ -203,9 +203,8 @@ jobs:
           UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
           -----END OPENSSH PRIVATE KEY-----
         passphrase: amin
-        source: "frontend-apps/apps/customer-app/dist/"
+        source: "frontend-apps/apps/customer-app/dist/*"
         target: "/var/www/customer-app/"
-        strip_components: 3
         debug: true
         
     - name: Deploy frontend to server
@@ -225,12 +224,40 @@ jobs:
         passphrase: amin
         debug: true
         script: |
+          # Clean up target directory first
+          echo "Cleaning up target directory..."
+          rm -rf /var/www/customer-app/*
+          
           # Navigate to web directory
           cd /var/www/customer-app
+          
+          # Debug: Show what's in the directory after SCP
+          echo "Contents after SCP copy:"
+          ls -la
+          
+          # Check if files are in subdirectories and move them up
+          if [ -d "dist" ]; then
+            echo "Found dist directory, moving contents up..."
+            mv dist/* . 2>/dev/null || true
+            rmdir dist 2>/dev/null || true
+          fi
+          
+          if [ -d "frontend-apps" ]; then
+            echo "Found frontend-apps directory, moving contents up..."
+            find frontend-apps -name "*.html" -exec mv {} . \; 2>/dev/null || true
+            find frontend-apps -name "*.js" -exec mv {} . \; 2>/dev/null || true
+            find frontend-apps -name "*.css" -exec mv {} . \; 2>/dev/null || true
+            find frontend-apps -name "*.json" -exec mv {} . \; 2>/dev/null || true
+            rm -rf frontend-apps 2>/dev/null || true
+          fi
           
           # Set proper permissions
           chown -R www-data:www-data /var/www/customer-app
           chmod -R 755 /var/www/customer-app
+          
+          # Final debug: Show what's in the directory
+          echo "Final directory contents:"
+          ls -la
           
           # Test if the frontend files are accessible
           if [ -f "index.html" ]; then
@@ -239,7 +266,8 @@ jobs:
             echo "📄 Main page: index.html"
           else
             echo "❌ Frontend deployment failed - index.html not found"
-            ls -la
+            echo "Available files:"
+            find . -type f -name "*.html" -o -name "*.js" -o -name "*.css" | head -10
             exit 1
           fi
 
