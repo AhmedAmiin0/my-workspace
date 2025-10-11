@@ -1,7 +1,7 @@
 {
   "name": "customer-backend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "backend/customer-backend/src",
+  "sourceRoot": "customer-backend/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -10,11 +10,14 @@
       "options": {
         "command": "webpack-cli build",
         "args": ["--node-env=production"],
-        "cwd": "backend/customer-backend"
+        "cwd": "customer-backend"
       },
       "configurations": {
         "development": {
           "args": ["--node-env=development", "--watch"]
+        },
+        "production": {
+          "args": ["--node-env=production", "--mode=production"]
         }
       }
     },
@@ -23,8 +26,8 @@
       "cache": true,
       "executor": "@nx/js:prune-lockfile",
       "outputs": [
-        "{workspaceRoot}/dist/backend/customer-backend/package.json",
-        "{workspaceRoot}/dist/backend/customer-backend/pnpm-lock.yaml"
+        "{workspaceRoot}/dist/customer-backend/package.json",
+        "{workspaceRoot}/dist/customer-backend/pnpm-lock.yaml"
       ],
       "options": {
         "buildTarget": "build"
@@ -33,7 +36,7 @@
     "copy-workspace-modules": {
       "dependsOn": ["build"],
       "cache": true,
-      "outputs": ["{workspaceRoot}/dist/backend/customer-backend/workspace_modules"],
+      "outputs": ["{workspaceRoot}/dist/customer-backend/workspace_modules"],
       "executor": "@nx/js:copy-workspace-modules",
       "options": {
         "buildTarget": "build"
@@ -70,21 +73,21 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "docker-compose -f docker-compose.dev.yml up",
-        "cwd": "backend/customer-backend"
+        "cwd": "customer-backend"
       }
     },
     "docker:prod": {
       "executor": "nx:run-commands",
       "options": {
         "command": "docker-compose -f docker-compose.prod.yml up -d",
-        "cwd": "backend/customer-backend"
+        "cwd": "customer-backend"
       }
     },
     "docker:down": {
       "executor": "nx:run-commands",
       "options": {
         "command": "docker-compose down",
-        "cwd": "backend/customer-backend"
+        "cwd": "customer-backend"
       }
     }
   }

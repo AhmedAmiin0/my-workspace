@@ -1,0 +1,317 @@
+{
+  "nodes": {
+    "customer-backend": {
+      "name": "customer-backend",
+      "type": "app",
+      "data": {
+        "root": "customer-backend",
+        "projectType": "application",
+        "metadata": {},
+        "targets": {
+          "build": {
+            "cache": true,
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production",
+              {
+                "externalDependencies": [
+                  "webpack-cli"
+                ]
+              }
+            ],
+            "outputs": [
+              "{workspaceRoot}/..\\dist\\backend\\customer-backend"
+            ],
+            "metadata": {
+              "technologies": [
+                "webpack"
+              ],
+              "description": "Runs Webpack build",
+              "help": {
+                "command": "npx webpack-cli build --help",
+                "example": {
+                  "options": {
+                    "json": "stats.json"
+                  },
+                  "args": [
+                    "--profile"
+                  ]
+                }
+              }
+            },
+            "executor": "nx:run-commands",
+            "options": {
+              "cwd": "customer-backend",
+              "args": [
+                "--node-env=production"
+              ],
+              "command": "webpack-cli build"
+            },
+            "configurations": {
+              "development": {
+                "args": [
+                  "--node-env=development",
+                  "--watch"
+                ]
+              },
+              "production": {
+                "args": [
+                  "--node-env=production",
+                  "--mode=production"
+                ]
+              }
+            },
+            "parallelism": true
+          },
+          "serve": {
+            "executor": "@nx/js:node",
+            "defaultConfiguration": "development",
+            "dependsOn": [
+              "build"
+            ],
+            "options": {
+              "buildTarget": "customer-backend:build",
+              "runBuildTargetDependencies": false,
+              "watch": true
+            },
+            "configurations": {
+              "development": {
+                "buildTarget": "customer-backend:build:development"
+              },
+              "production": {
+                "buildTarget": "customer-backend:build:production"
+              }
+            },
+            "parallelism": true
+          },
+          "preview": {
+            "continuous": true,
+            "options": {
+              "cwd": "customer-backend",
+              "args": [
+                "--node-env=production"
+              ],
+              "command": "webpack-cli serve"
+            },
+            "metadata": {
+              "technologies": [
+                "webpack"
+              ],
+              "description": "Starts Webpack dev server in production mode",
+              "help": {
+                "command": "npx webpack-cli serve --help",
+                "example": {
+                  "options": {
+                    "args": [
+                      "--client-progress",
+                      "--history-api-fallback "
+                    ]
+                  }
+                }
+              }
+            },
+            "executor": "nx:run-commands",
+            "configurations": {},
+            "parallelism": true
+          },
+          "serve-static": {
+            "continuous": true,
+            "dependsOn": [
+              "build"
+            ],
+            "executor": "@nx/web:file-server",
+            "options": {
+              "buildTarget": "build",
+              "spa": true
+            },
+            "configurations": {},
+            "parallelism": true
+          },
+          "build-deps": {
+            "dependsOn": [
+              "^build"
+            ],
+            "configurations": {},
+            "options": {},
+            "parallelism": true,
+            "executor": "nx:noop"
+          },
+          "watch-deps": {
+            "continuous": true,
+            "dependsOn": [
+              "build-deps"
+            ],
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "npx nx watch --projects customer-backend --includeDependentProjects -- npx nx build-deps customer-backend"
+            },
+            "configurations": {},
+            "parallelism": true
+          },
+          "lint": {
+            "cache": true,
+            "options": {
+              "cwd": "customer-backend",
+              "command": "eslint ."
+            },
+            "inputs": [
+              "default",
+              "^default",
+              "{workspaceRoot}/customer-backend/eslint.config.mjs",
+              "{workspaceRoot}/tools/eslint-rules/**/*",
+              {
+                "externalDependencies": [
+                  "eslint"
+                ]
+              }
+            ],
+            "outputs": [
+              "{options.outputFile}"
+            ],
+            "metadata": {
+              "technologies": [
+                "eslint"
+              ],
+              "description": "Runs ESLint on project",
+              "help": {
+                "command": "npx eslint --help",
+                "example": {
+                  "options": {
+                    "max-warnings": 0
+                  }
+                }
+              }
+            },
+            "executor": "nx:run-commands",
+            "configurations": {},
+            "parallelism": true
+          },
+          "test": {
+            "metadata": {
+              "technologies": [
+                "jest"
+              ],
+              "description": "Run Jest Tests",
+              "help": {
+                "command": "npx jest --help",
+                "example": {
+                  "options": {
+                    "coverage": true
+                  }
+                }
+              }
+            },
+            "cache": true,
+            "inputs": [
+              "default",
+              "^production",
+              "jest.preset.js",
+              {
+                "externalDependencies": [
+                  "jest"
+                ]
+              }
+            ],
+            "outputs": [
+              "coverage\\backend\\customer-backend"
+            ],
+            "executor": "nx:run-commands",
+            "options": {
+              "cwd": "customer-backend",
+              "env": {
+                "TS_NODE_COMPILER_OPTIONS": "{\"moduleResolution\":\"node10\",\"module\":\"commonjs\",\"customConditions\":null}"
+              },
+              "command": "jest",
+              "passWithNoTests": true
+            },
+            "configurations": {},
+            "parallelism": true
+          },
+          "prune-lockfile": {
+            "dependsOn": [
+              "build"
+            ],
+            "cache": true,
+            "executor": "@nx/js:prune-lockfile",
+            "outputs": [
+              "{workspaceRoot}/dist/customer-backend/package.json",
+              "{workspaceRoot}/dist/customer-backend/pnpm-lock.yaml"
+            ],
+            "options": {
+              "buildTarget": "build"
+            },
+            "configurations": {},
+            "parallelism": true
+          },
+          "copy-workspace-modules": {
+            "dependsOn": [
+              "build"
+            ],
+            "cache": true,
+            "outputs": [
+              "{workspaceRoot}/dist/customer-backend/workspace_modules"
+            ],
+            "executor": "@nx/js:copy-workspace-modules",
+            "options": {
+              "buildTarget": "build"
+            },
+            "configurations": {},
+            "parallelism": true
+          },
+          "prune": {
+            "dependsOn": [
+              "prune-lockfile",
+              "copy-workspace-modules"
+            ],
+            "executor": "nx:noop",
+            "configurations": {},
+            "options": {},
+            "parallelism": true
+          },
+          "docker:dev": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "docker-compose -f docker-compose.dev.yml up",
+              "cwd": "customer-backend"
+            },
+            "configurations": {},
+            "parallelism": true
+          },
+          "docker:prod": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "docker-compose -f docker-compose.prod.yml up -d",
+              "cwd": "customer-backend"
+            },
+            "configurations": {},
+            "parallelism": true
+          },
+          "docker:down": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "docker-compose down",
+              "cwd": "customer-backend"
+            },
+            "configurations": {},
+            "parallelism": true
+          }
+        },
+        "name": "customer-backend",
+        "$schema": "../../node_modules/nx/schemas/project-schema.json",
+        "sourceRoot": "customer-backend/src",
+        "tags": [],
+        "implicitDependencies": []
+      }
+    }
+  },
+  "externalNodes": {},
+  "dependencies": {
+    "customer-backend": []
+  },
+  "version": "6.0",
+  "errors": [],
+  "computedAt": 1760179385806
+}
