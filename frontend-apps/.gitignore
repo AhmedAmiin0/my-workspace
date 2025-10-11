@@ -60,3 +60,4 @@ cache/
 
 
 test-output
+.nx/*
