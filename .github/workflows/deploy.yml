@@ -205,6 +205,7 @@ jobs:
         passphrase: amin
         source: "frontend-apps/apps/customer-app/dist/"
         target: "/var/www/customer-app/"
+        strip_components: 3
         debug: true
         
     - name: Deploy frontend to server
