@@ -57,16 +57,7 @@ jobs:
       with:
         host: 148.230.116.195
         username: root
-        key: |
-          -----BEGIN OPENSSH PRIVATE KEY-----
-          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
-          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
-          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
-          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
-          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
-          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
-          -----END OPENSSH PRIVATE KEY-----
-        passphrase: amin
+        key: ${{ secrets.SSH_KEY }}
         source: "backend-apps/"
         target: "/var/project/"
         debug: true
@@ -76,16 +67,7 @@ jobs:
       with:
         host: 148.230.116.195
         username: root
-        key: |
-          -----BEGIN OPENSSH PRIVATE KEY-----
-          b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABCE5Y18X2
-          UNRZ+tA/PCfyE/AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIBslgWt/ggXzi5H6
-          wE0bVWW7IljYyj7g2PHokA0sMPneAAAAoOMthg25i6itHp2e/zIvbGr393bkVVZwxIFPlg
-          Utj3UIoyGBS5MCa4phC6edXMfKZfolhWRaqu04uH9fFDz00c9VKo4DintAg+v6TonaotQD
-          Tckg/WhpsR2wfx/NzWFLozJCK63UhmXwwxHjbxhBfY+3XJNqvXYGx0xkBrWEtJhJEzDOMs
-          UWY24u7dixPhc4uECJSAsBMC5E79KujmOX41A=
-          -----END OPENSSH PRIVATE KEY-----
-        passphrase: amin
+        key: ${{ secrets.SSH_KEY }}
         debug: true
         script: |
           # Navigate to project directory
